@@ -66,17 +66,13 @@ router.post('/', async (req,res)=>{
     if(validation_error)
         return res.status(400).send(validation_error.details[0].message);
 
-    const student = new Student({
-        name : req.body.name,
-        email : req.body.email,
-        class : {name : req.body.class.name},
-    });
+    const student = new Student(_.pick(req.body, ['name','email','age','extra_payment','class.name','class.max_student']));
 
     try{
         const savedStudent = await student.save();
         return res.status(201).send(savedStudent);
-    }catch(err){
-        res.status(400).send('Something wrong in saving to DB. Data already exists');
+    }catch(ex){
+        res.status(400).send('Something wrong in saving to DB. '+ex.message);
     }
     
 })
