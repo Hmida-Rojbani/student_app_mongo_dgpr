@@ -19,6 +19,12 @@ router.get('/class/name/:class_name', async (req,res)=>{
     res.send(students);
 });
 
+router.get('/class/name/:class_name/limit/:limit', async (req,res)=>{
+    const class_name = req.params.class_name;
+    var students = await Student.find({ "class.name" : class_name}).limit(parseInt(req.params.limit));
+    res.send(students);
+});
+
 router.get('/class/name/:class_name/age/:age', async (req,res)=>{
     const class_name = req.params.class_name;
     const age = req.params.age;
