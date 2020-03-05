@@ -10,6 +10,7 @@ const class_schema = new mongoose.Schema({
 const student_schema = new mongoose.Schema({
     name : {type :String , required :true},
     email : {type: String, required : true , unique : true},
+    age: Number,
     class : {type : class_schema, required : true},
     date_inscit : {type: Date, default : Date.now() }
 });
@@ -17,6 +18,7 @@ const student_schema = new mongoose.Schema({
 const student_validation_schema = {
     name : Joi.string().min(3).max(25).required(),
     email : Joi.string().email().required(),
+    age : Joi.number().positive(),
     class : {
         name : Joi.string().min(3).max(12).required(),
         max_student : Joi.number().positive()
@@ -28,6 +30,7 @@ const student_validation_schema_update = {
     _id: Joi.objectid(),
     name : Joi.string().min(3).max(25),
     email : Joi.string().email(),
+    age : Joi.number().positive(),
     class : {
         _id: Joi.objectid(),
         name : Joi.string().min(3).max(12),

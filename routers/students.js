@@ -7,6 +7,25 @@ router.get('/welcome', (req,res)=>{
     res.send('Welcome to Student API');
 });
 
+router.get('/name/:name', async (req,res)=>{
+    const name = req.params.name;
+    var students = await Student.find({ name : name});
+    res.send(students);
+});
+
+router.get('/class/name/:class_name', async (req,res)=>{
+    const class_name = req.params.class_name;
+    var students = await Student.find({ "class.name" : class_name});
+    res.send(students);
+});
+
+router.get('/class/name/:class_name/age/:age', async (req,res)=>{
+    const class_name = req.params.class_name;
+    const age = req.params.age;
+    var students = await Student.find({ $and : [{"age":age}, {"class.name" : class_name} ] });
+    res.send(students);
+});
+
 router.get('/', async (req,res)=>{
 
     const students = await Student.find().sort('name');
@@ -16,6 +35,14 @@ router.get('/', async (req,res)=>{
     
 })
 
+router.get('/sort/class/name/', async (req,res)=>{
+
+    const students = await Student.find().sort('-class.name');
+    if(students.length === 0)
+        return res.status(204).send();
+    res.send(students)
+    
+})
 router.get('/id/:id', async (req,res)=>{
     const validation = id_validation(req.params);
     if(validation)
