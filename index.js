@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const config = require('config');
+const student_router = require('./routers/students');
 const appDebug = require('debug')('app:debug');
 require('./db_connection/connectDb');
 
@@ -11,6 +12,7 @@ app.use(express.json());
 if(app.get('env') === "development")
     app.use(morgan('dev'));
 
+app.use('/api/students',student_router);
 
 app.listen(port, () => appDebug(`Application is Up on ${port}...`));
     
