@@ -1,5 +1,6 @@
 const router = require('express').Router();
-const { Student, student_validation, id_validation } = require('../models/student');
+const _ = require('lodash');
+const { Student, student_validation, student_validation_update , id_validation } = require('../models/student');
 
 
 router.get('/welcome', (req,res)=>{
@@ -45,11 +46,36 @@ router.post('/', async (req,res)=>{
         res.status(400).send('Something wrong in saving to DB. Data already exists');
     }
     
-    
+})
+
+router.delete('/id/:id', async (req,res)=>{
+    const validation = id_validation(req.params);
+    if(validation)
+        return res.status(400).send(validation.details[0].message)
+    const student = await Student.findByIdAndRemove(req.params.id);
+    if(!student)
+        return res.status(404).send(`Student not found`);
+    res.send(student)
     
 })
 
+router.put('/id/:id', async (req,res)=>{
+    const validation = id_validation(req.params);
+    if(validation)
+        return res.status(400).send(validation.details[0].message)
+    let student = await Student.findById(req.params.id);
+    if(!student)
+        return res.status(404).send(`Student not found`);
 
+    const validation_error = student_validation_update(req.body);
+    if(validation_error)
+        return res.status(400).send(validation_error.details[0].message);
+    student = _.merge(student,req.body);
+    student = await student.save()
+    
+    res.send(student)
+    
+})
 
 
 

@@ -24,12 +24,27 @@ const student_validation_schema = {
     date_inscit : Joi.date()
 }
 
+const student_validation_schema_update = {
+    _id: Joi.objectid(),
+    name : Joi.string().min(3).max(25),
+    email : Joi.string().email(),
+    class : {
+        _id: Joi.objectid(),
+        name : Joi.string().min(3).max(12),
+        max_student : Joi.number().positive()
+    },
+    date_inscit : Joi.date()
+}
+
 const Student = mongoose.model('Student', student_schema);
 
 function student_validation (body){
     return Joi.validate(body,student_validation_schema).error;
 }
 
+function student_validation_update (body){
+    return Joi.validate(body,student_validation_schema_update).error;
+}
 const path_var_valiator_schema = {
     id: Joi.objectid().required()
 }
@@ -40,4 +55,5 @@ function id_validation (pathVariables){
 
 module.exports.Student = Student;
 module.exports.student_validation = student_validation;
+module.exports.student_validation_update = student_validation_update;
 module.exports.id_validation = id_validation;
