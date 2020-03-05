@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const { Student, student_validation } = require('../models/student');
+const { Student, student_validation, id_validation } = require('../models/student');
 
 
 router.get('/welcome', (req,res)=>{
@@ -8,10 +8,21 @@ router.get('/welcome', (req,res)=>{
 
 router.get('/', async (req,res)=>{
 
-    const students = await Student.find();
+    const students = await Student.find().sort('name');
     if(students.length === 0)
-        res.status(204).send();
+        return res.status(204).send();
     res.send(students)
+    
+})
+
+router.get('/id/:id', async (req,res)=>{
+    const validation = id_validation(req.params);
+    if(validation)
+        return res.status(400).send(validation.details[0].message)
+    const student = await Student.findById(req.params.id);
+    if(!student)
+        return res.status(404).send(`Student not found`);
+    res.send(student)
     
 })
 

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const Joi = require('joi');
+Joi.objectid = require('joi-objectid')(Joi);
 
 const class_schema = new mongoose.Schema({
     name : {type : String, required : true},
@@ -29,5 +30,14 @@ function student_validation (body){
     return Joi.validate(body,student_validation_schema).error;
 }
 
+const path_var_valiator_schema = {
+    id: Joi.objectid().required()
+}
+
+function id_validation (pathVariables){
+    return Joi.validate(pathVariables,path_var_valiator_schema).error;
+}
+
 module.exports.Student = Student;
 module.exports.student_validation = student_validation;
+module.exports.id_validation = id_validation;
