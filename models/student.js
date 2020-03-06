@@ -3,7 +3,8 @@ const Joi = require('joi');
 Joi.objectid = require('joi-objectid')(Joi);
 
 const class_schema = new mongoose.Schema({
-    name : {type : String, required : true},
+    _id : { type: mongoose.Schema.ObjectId, ref: 'Class' },
+    name : {type : String, required : true, enum : ['GLSI','DMWM','SSIR','DSEN']},
     max_student : Number
 })
 
@@ -12,7 +13,7 @@ const student_schema = new mongoose.Schema({
     email : {type: String, required : true , unique : true},
     age: Number,
     class : {type : class_schema, required : true},
-    extra_payment : {type : Number, required : function (){ return this.age>=28}},
+    extra_payment : {type : Number, required : function (){ return this.age>=28}, get: function (v) {return Math.round(v)} },
     date_inscit : {type: Date, default : Date.now() }
 });
 
@@ -21,10 +22,7 @@ const student_validation_schema = {
     email : Joi.string().email().required(),
     age : Joi.number().positive(),
     extra_payment: Joi.number().positive(),
-    class : {
-        name : Joi.string().min(3).max(12).required(),
-        max_student : Joi.number().positive()
-    },
+    class_id : Joi.objectid(),
     date_inscit : Joi.date()
 }
 

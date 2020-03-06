@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const _ = require('lodash');
+const config = require('config');
+const { ClassRoom } = require('../models/class')
 const { Student, student_validation, student_validation_update , id_validation } = require('../models/student');
 
 
@@ -64,10 +66,14 @@ router.post('/', async (req,res)=>{
 
     const validation_error = student_validation(req.body);
     if(validation_error)
-        return res.status(400).send(validation_error.details[0].message);
-
-    const student = new Student(_.pick(req.body, ['name','email','age','extra_payment','class.name','class.max_student']));
-
+        //changement de langage
+        //return res.status(400).send(config.get('errors.'+validation_error.details[0].message)
+        return res.status(400).send( validation_error.details[0].message);
+    const classRoom = await ClassRoom.findById(req.body.class_id);
+    if(!classRoom) 
+        return res.status(400).send('Class with given id is missing');
+    const student = new Student(_.pick(req.body, ['name','email','age','extra_payment']));
+    student.class = _.pick(classRoom, ['_id','name','max_student']);
     try{
         const savedStudent = await student.save();
         return res.status(201).send(savedStudent);
