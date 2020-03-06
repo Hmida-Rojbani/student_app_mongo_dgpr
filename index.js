@@ -4,6 +4,8 @@ const config = require('config');
 const helmet = require('helmet');
 const student_router = require('./routers/students');
 const class_router = require('./routers/classes');
+const user_router = require('./routers/users');
+const login_router = require('./routers/auth');
 const appDebug = require('debug')('app:debug');
 require('./db_connection/connectDb');
 
@@ -17,6 +19,8 @@ if(app.get('env') === "development")
 
 app.use('/api/students',student_router);
 app.use('/api/classes',class_router);
+app.use('/api/users',user_router);
+app.use('/api/login',login_router);
 
 app.listen(port, () => appDebug(`Application is Up on ${port}...`));
     

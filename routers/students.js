@@ -2,6 +2,7 @@ const router = require('express').Router();
 const _ = require('lodash');
 const config = require('config');
 const { ClassRoom } = require('../models/class')
+const auth=require('../middelwares/auth');
 const { Student, student_validation, student_validation_update , id_validation } = require('../models/student');
 
 
@@ -62,7 +63,7 @@ router.get('/id/:id', async (req,res)=>{
     
 })
 
-router.post('/', async (req,res)=>{
+router.post('/',auth, async (req,res)=>{
 
     const validation_error = student_validation(req.body);
     if(validation_error)
@@ -83,7 +84,7 @@ router.post('/', async (req,res)=>{
     
 })
 
-router.delete('/id/:id', async (req,res)=>{
+router.delete('/id/:id',auth, async (req,res)=>{
     const validation = id_validation(req.params);
     if(validation)
         return res.status(400).send(validation.details[0].message)
@@ -94,7 +95,7 @@ router.delete('/id/:id', async (req,res)=>{
     
 })
 
-router.put('/id/:id', async (req,res)=>{
+router.put('/id/:id',auth, async (req,res)=>{
     const validation = id_validation(req.params);
     if(validation)
         return res.status(400).send(validation.details[0].message)
