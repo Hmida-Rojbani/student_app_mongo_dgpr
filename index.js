@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const config = require('config');
+const helmet = require('helmet');
 const student_router = require('./routers/students');
 const class_router = require('./routers/classes');
 const appDebug = require('debug')('app:debug');
@@ -10,6 +11,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(helmet());
 if(app.get('env') === "development")
     app.use(morgan('dev'));
 
