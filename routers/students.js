@@ -3,6 +3,7 @@ const _ = require('lodash');
 const config = require('config');
 const { ClassRoom } = require('../models/class')
 const auth=require('../middelwares/auth');
+const autoris=require('../middelwares/autoris');
 const { Student, student_validation, student_validation_update , id_validation } = require('../models/student');
 
 
@@ -84,7 +85,7 @@ router.post('/',auth, async (req,res)=>{
     
 })
 
-router.delete('/id/:id',auth, async (req,res)=>{
+router.delete('/id/:id',[auth,autoris], async (req,res)=>{
     const validation = id_validation(req.params);
     if(validation)
         return res.status(400).send(validation.details[0].message)

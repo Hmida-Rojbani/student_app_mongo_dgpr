@@ -9,6 +9,16 @@ const login_router = require('./routers/auth');
 const appDebug = require('debug')('app:debug');
 require('./db_connection/connectDb');
 
+if(!config.get('jwtPrivateKey')){
+    console.error('FATAL ERROR : jwtPrivateKey is not defined');
+    process.exit(1);
+}
+
+if(!config.get('db.password')){
+    console.error('FATAL ERROR : DB password is not defined');
+    process.exit(1);
+}
+
 const app = express();
 const port = process.env.PORT || 3000;
 
